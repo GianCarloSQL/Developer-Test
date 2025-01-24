@@ -10,12 +10,19 @@ public class DefaultContext : DbContext
 {
     public DbSet<User> Users { get; set; }
 
+    public DbSet<Sale> Sales { get; set; }
+
     public DefaultContext(DbContextOptions<DefaultContext> options) : base(options)
     {
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Sale>()
+        .HasMany(s => s.SaleItems)
+        .WithOne(si => si.Sale)
+        .HasForeignKey(si => si.Id);
+
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         base.OnModelCreating(modelBuilder);
     }
